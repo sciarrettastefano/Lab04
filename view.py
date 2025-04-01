@@ -28,14 +28,53 @@ class View(object):
 
         # Add your stuff here
 
-        self.page.add([])
+        # Riga 1: menù per scegliere la lingua
+        self._ddLanguage = ft.Dropdown(
+            label = "Language",
+            width = 750
+        )
+        self._ddLanguage.options.append(ft.dropdown.Option("Italian"))
+        self._ddLanguage.options.append(ft.dropdown.Option("English"))
+        self._ddLanguage.options.append(ft.dropdown.Option("Spanish"))
+        row1 = ft.Row([self._ddLanguage], ft.MainAxisAlignment.START)
 
-        self.page.update()
+        # Riga 2: manù per scegliere modalità di ricerca + spazio per inserire il proprio testo + bottone per avviare il controllo
+        self._ddModality = ft.Dropdown(
+            label = "Search Modality",
+            width = 200
+        )
+        self._ddModality.options.append(ft.dropdown.Option("Default"))
+        self._ddModality.options.append(ft.dropdown.Option("Linear"))
+        self._ddModality.options.append(ft.dropdown.Option("Dichotomic"))
+        self._txtIn = ft.TextField(
+            label = "Add your sentence here",
+            width = 430
+        )
+        self._btnSpellCheck = ft.ElevatedButton(
+            text="Spell Check",
+            on_click = self.__controller.handleSentence
+        )
+        row2 = ft.Row([self._ddModality, self._txtIn, self._btnSpellCheck], ft.MainAxisAlignment.START)
+
+        # In più: aggiungo un bottone che fa pulire la ListView quando vuole l'utente
+        self._btnClear = ft.ElevatedButton(
+            text="Clear",
+            on_click = self.__controller.handleClear,
+            width = 300
+        )
+        row3 = ft.Row([self._btnClear], ft.MainAxisAlignment.CENTER)
+
+        # ListView per avere riscontro
+        self._txtOut = ft.ListView(expand = True)
+
+        self.page.add(row1, row2, row3, self._txtOut)
 
     def update(self):
         self.page.update()
+
     def setController(self, controller):
         self.__controller = controller
+
     def theme_changed(self, e):
         """Function that changes the color theme of the app, when the corresponding
         switch is triggered"""

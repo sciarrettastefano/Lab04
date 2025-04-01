@@ -30,17 +30,19 @@ class MultiDictionary:
             word = word.lower()
             found = False
             richW = rw.RichWord(word)
-            if language == "english":
+            if language == "English":
                 if self._english.dict.__contains__(word):
                     found = True
-            elif language == "italian":
+            elif language == "Italian":
                 if self._italian.dict.__contains__(word):
                     found = True
-            elif language == "spanish":
+            elif language == "Spanish":
                 if self._spanish.dict.__contains__(word):
                     found = True
-            if (found):
+            if found:
                 richW.corretta = True
+            else:
+                richW.corretta = False
 
             parole.append(richW)
 
@@ -54,20 +56,22 @@ class MultiDictionary:
             word = word.lower()
             found = False
             richW = rw.RichWord(word)
-            if language == "english":
+            if language == "English":
                 for entry in self._english.dict:
                     if entry == word:
                         found = True
-            elif language == "italian":
+            elif language == "Italian":
                 for entry in self._italian.dict:
                     if entry == word:
                         found = True
-            elif language == "spanish":
+            elif language == "Spanish":
                 for entry in self._spanish.dict:
                     if entry == word:
                         found = True
-            if (found):
+            if found:
                 richW.corretta = True
+            else:
+                richW.corretta = False
 
             parole.append(richW)
 
@@ -81,17 +85,19 @@ class MultiDictionary:
             word = word.lower()
             found = False
             richW = rw.RichWord(word)
-            if language == "english":
+            if language == "English":
                 currentDic = self._english.dict
                 found = dichotomicSearch(word, currentDic)
-            elif language == "italian":
+            elif language == "Italian":
                 currentDic = self._italian.dict
                 found = dichotomicSearch(word, currentDic)
-            elif language == "spanish":
+            elif language == "Spanish":
                 currentDic = self._spanish.dict
                 found = dichotomicSearch(word, currentDic)
-            if (found):
+            if found:
                 richW.corretta = True
+            else:
+                richW.corretta = False
 
             parole.append(richW)
 

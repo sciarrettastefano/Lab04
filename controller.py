@@ -8,11 +8,42 @@ class SpellChecker:
         self._multiDic = md.MultiDictionary()
         self._view = view
 
-    def handleSentence(self, txtIn, language, modality):
+    def handleSentence(self, e):
+        # Faccio i controlli che tutto sia stato selezionato
+        language = self._view._ddLanguage.value
+        if language == None:
+            self._view._txtOut.controls.append(
+                ft.Text("Attenzione. Selezionare una lingua.", color="red")
+            )
+            self._view.update()
+            return
+
+        modality = self._view._ddModality.value
+        if modality == None:
+            self._view._txtOut.controls.append(
+                ft.Text("Attenzione. Selezionare una modalità.", color="red")
+            )
+            self._view.update()
+            return
+
+        txtIn = self._view._txtIn.value
+        if txtIn == "":
+            self._view._txtOut.controls.append(
+                ft.Text("Attenzione. Inserire una frase.", color="red")
+            )
+            self._view.update()
+            return
+
+        # Stampo nella lv la frase
+        self._view._txtOut.controls.append(
+            ft.Text(f"Frase inserita: {txtIn}")
+        )
+
         txtIn = replaceChars(txtIn.lower())
 
         words = txtIn.split()
-        paroleErrate = " - "
+        paroleErrate = ""
+        tempoImpiegato = 0.0
 
         match modality:
             case "Default":
@@ -20,9 +51,10 @@ class SpellChecker:
                 parole = self._multiDic.searchWord(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " - "
+                        paroleErrate = paroleErrate + str(parola) + " "
                 t2 = time.time()
-                return paroleErrate, t2 - t1
+                tempoImpiegato = t2 - t1
+                print(paroleErrate, t2 - t1)
 
             case "Linear":
                 t1 = time.time()
@@ -31,31 +63,31 @@ class SpellChecker:
                     if not parola.corretta:
                         paroleErrate = paroleErrate + str(parola) + " "
                 t2 = time.time()
-                return paroleErrate, t2 - t1
+                tempoImpiegato = t2 - t1
+                print(paroleErrate, t2 - t1)
 
             case "Dichotomic":
                 t1 = time.time()
                 parole = self._multiDic.searchWordDichotomic(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " - "
+                        paroleErrate = paroleErrate + str(parola) + " "
                 t2 = time.time()
-                return paroleErrate, t2 - t1
-            case _:
-                return None
+                tempoImpiegato = t2 - t1
+                print(paroleErrate, t2 - t1)
 
+        # Aggiungo alla lv le parole errate e il tempo impiegato
+        self._view._txtOut.controls.append(
+            ft.Text(f"Parole errate: {paroleErrate}")
+        )
+        self._view._txtOut.controls.append(
+            ft.Text(f"Tempo richiesto alla ricerca: {tempoImpiegato}")
+        )
+        self._view.update()
 
-    def printMenu(self):
-        print("______________________________\n" +
-              "      SpellChecker 101\n"+
-              "______________________________\n " +
-              "Seleziona la lingua desiderata\n"
-              "1. Italiano\n" +
-              "2. Inglese\n" +
-              "3. Spagnolo\n" +
-              "4. Exit\n" +
-              "______________________________\n")
-
+    def handleClear(self, e):
+        self._view._txtOut.controls.clear()
+        self._view.update()
 
 def replaceChars(text):
     chars = "\\`*_{}[]()>#+-.!$?%^;,=_~"
